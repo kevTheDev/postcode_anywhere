@@ -1,5 +1,7 @@
 require "httparty"
-module PostcodeAnywhere
+require 'cgi'
+
+class PostcodeAnywhere
   
   SERVICE_ADDRESS = "http://services.postcodeanywhere.co.uk/PostcodeAnywhere/Interactive/RetrieveByPostcodeAndBuilding/v1.00/xmle.ws"
   
@@ -8,7 +10,7 @@ module PostcodeAnywhere
   
   class << self
     
-    attr_accessor :key, :postcode, :number
+    attr_accessor :key#, :postcode, :number
     
     def license_key
       @key
@@ -17,7 +19,9 @@ module PostcodeAnywhere
     
   end
   
-  def self.lookup(query_options={})
+
+  
+  def self.find(query_options={})
     PostcodeAnywhere.validate_key
     data = PostcodeAnywhere.lookup(postcode)
     data["Table"]["Row"]
@@ -35,18 +39,16 @@ module PostcodeAnywhere
     data["Table"]["Row"]
   end
   
-  protected
-  
-  def params
+  def self.params(options={})
     {
-      :Key      => self.key,
-      :Postcode => self.postcode,
-      :Building => self.number
+      :Key      => POSTCODE_ANYWHERE_KEY,
+      :Postcode => options[:postcode],
+      :Building => options[:number]
     }
   end
   
-  def query_string
-    params.map{|k,v| "#{CGI::escape(k.to_s)}=#{CGI::escape(v)}"}.join('&')
+  def self.query_string(options={})
+    params(options).map{|k,v| "#{CGI::escape(k.to_s)}=#{CGI::escape(v)}"}.join('&')
   end
   
   # appends query string to HOST_URL
@@ -66,8 +68,8 @@ module PostcodeAnywhere
   end
   
   def self.lookup(postcode, number='')
-    #PostcodeAnywhere.get SERVICE_ADDRESS+"?Key=#{PostcodeAnywhere.key}&Postcode=#{sanitised_postcode(postcode)}&Building=#{number}"
-    PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{query_string}"
+    param_string = query_string(:postcode => postcode, :number => number)
+    PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{param_string}"
   end
 
   class PostcodeAnywhereException < StandardError;end
