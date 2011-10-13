@@ -17,11 +17,8 @@ module Hatch
         @key
       end
       
-      
     end
-    
-  
-    
+
     def self.find(query_options={})
       PostcodeAnywhere.validate_key
       data = PostcodeAnywhere.lookup(postcode)
@@ -51,13 +48,7 @@ module Hatch
     def self.query_string(options={})
       params(options).map{|k,v| "#{CGI::escape(k.to_s)}=#{CGI::escape(v)}"}.join('&')
     end
-    
-    # appends query string to HOST_URL
-    def to_s
-      "#{HOST_URL}?#{query_string}"  
-    end
-    
-    
+
     def self.validate_key
       unless PostcodeAnywhere.key
         raise PostcodeAnywhereException, "Please provide a valid Postcode Anywhere License Key"
