@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "hatch_postcode_anywhere/version"
+require "hatch/version"
 require 'bundler'
 
 Gem::Specification.new do |s|
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Interface to the postcode anywhere API}
   s.description = %q{Interface to the postcode anywhere API}
 
-  s.rubyforge_project = "hatch_elements"
+  s.rubyforge_project = "hatch_postcode_anywhere"
 
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
