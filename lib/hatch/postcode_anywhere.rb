@@ -8,39 +8,17 @@ module Hatch
     
     include HTTParty
     format :xml
-    
-    class << self
-      
-      attr_accessor :key#, :postcode, :number
-      
-      def license_key
-        @key
-      end
-      
-    end
 
     def self.find(query_options={})
       PostcodeAnywhere.validate_key
-      data = PostcodeAnywhere.lookup(postcode)
+      data = PostcodeAnywhere.lookup(query_options)
       data["Table"]["Row"]
     end
-    
-    def self.find_by_postcode(postcode)
-      PostcodeAnywhere.validate_key
-      data = PostcodeAnywhere.lookup(postcode)
-      data["Table"]["Row"]
-    end
-    
-    def self.find_by_postcode_and_number(postcode, number)
-      PostcodeAnywhere.validate_key
-      data = PostcodeAnywhere.lookup(postcode, number)
-      data["Table"]["Row"]
-    end
-    
+
     def self.params(options={})
       {
         :Key      => POSTCODE_ANYWHERE_KEY,
-        :Postcode => options[:postcode],
+        :Postcode => sanitised_postcode(options[:postcode]),
         :Building => options[:number]
       }
     end
@@ -50,7 +28,7 @@ module Hatch
     end
 
     def self.validate_key
-      unless PostcodeAnywhere.key
+      unless POSTCODE_ANYWHERE_KEY
         raise PostcodeAnywhereException, "Please provide a valid Postcode Anywhere License Key"
       end
     end
@@ -59,8 +37,8 @@ module Hatch
       postcode.gsub(/\s/, "")
     end
     
-    def self.lookup(postcode, number='')
-      param_string = query_string(:postcode => postcode, :number => number)
+    def self.lookup(query_options={})
+      param_string = query_string(query_options)
       PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{param_string}"
     end
   
