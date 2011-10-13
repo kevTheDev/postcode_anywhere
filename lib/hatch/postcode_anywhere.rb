@@ -9,9 +9,9 @@ module Hatch
     include HTTParty
     format :xml
 
-    def self.find(query_options={})
+    def self.lookup(query_options={})
       PostcodeAnywhere.validate_key
-      data = PostcodeAnywhere.lookup(query_options)
+      data = PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{query_string(query_options)}"
       data["Table"]["Row"]
     end
 
@@ -36,12 +36,7 @@ module Hatch
     def self.sanitised_postcode(postcode)
       postcode.gsub(/\s/, "")
     end
-    
-    def self.lookup(query_options={})
-      param_string = query_string(query_options)
-      PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{param_string}"
-    end
-  
+
     class PostcodeAnywhereException < StandardError;end
     
   end
