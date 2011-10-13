@@ -16,11 +16,12 @@ module Hatch
     end
 
     def self.params(options={})
-      {
+      params_hash = {
         :Key      => POSTCODE_ANYWHERE_KEY,
         :Postcode => sanitised_postcode(options[:postcode]),
         :Building => options[:number]
       }
+      params_hash.delete_if {|k,v| v.nil? || v.empty? }
     end
     
     def self.query_string(options={})
