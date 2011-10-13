@@ -1,4 +1,4 @@
-module HatchPostcodeAnywhere
+module Hatch
   
   autoload :PostcodeAnywhere, 'hatch/postcode_anywhere'
   autoload :Version,          'hatch/version'
