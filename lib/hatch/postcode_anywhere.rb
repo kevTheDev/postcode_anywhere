@@ -14,7 +14,8 @@ module Hatch
       data = PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{query_string(query_options)}"
       data["Table"]["Row"]
     end
-
+    
+    # TODO - we should be able to accept common aliases for postcode var
     def self.params(options={})
       params_hash = {
         :Key      => POSTCODE_ANYWHERE_KEY,
