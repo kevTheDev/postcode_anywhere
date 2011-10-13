@@ -12,7 +12,17 @@ module Hatch
     def self.lookup(query_options={})
       PostcodeAnywhere.validate_key
       data = PostcodeAnywhere.get "#{SERVICE_ADDRESS}?#{query_string(query_options)}"
-      data["Table"]["Row"]
+      parse_data(data)
+    end
+    
+    def self.parse_data(data)
+      return nil if data.nil?
+      
+      if data.has_key?('Table') && data['Table']
+        data['Table']['Row']
+      else
+        nil
+      end
     end
     
     def self.params(options={})
